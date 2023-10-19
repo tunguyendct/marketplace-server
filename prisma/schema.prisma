@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Type {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  Product   Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Tier {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  Product   Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Theme {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  Product   Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Author {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String    @unique
+  avatar    String
+  verified  Boolean
+  Product   Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  price     Float
+  author    Author   @relation(fields: [authorId], references: [id])
+  authorId  String   @db.ObjectId
+  type      Type     @relation(fields: [typeId], references: [id])
+  typeId    String   @db.ObjectId
+  tier      Tier     @relation(fields: [tierId], references: [id])
+  tierId    String   @db.ObjectId
+  theme     Theme    @relation(fields: [themeId], references: [id])
+  themeId   String   @db.ObjectId
+  createdAt DateTime @default(now())
+}
