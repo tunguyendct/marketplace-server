@@ -1,7 +1,14 @@
 import cors from 'cors'
 import express, { Router } from 'express'
 import path from 'path'
-import searchProducts from './controllers/product.controller.js'
+import listAuthors from './controllers/author.controller.js'
+import {
+  listProducts,
+  searchProducts,
+} from './controllers/product.controller.js'
+import listThemes from './controllers/theme.controller.js'
+import listTiers from './controllers/tier.controller.js'
+import listTypes from './controllers/type.controller.js'
 
 const router = Router()
 
@@ -20,6 +27,16 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 
 // API routes
 app.use('/api', router)
+
+router.get('/themes', listThemes)
+
+router.get('/tiers', listTiers)
+
+router.get('/types', listTypes)
+
+router.get('/authors', listAuthors)
+
+router.get('/products', listProducts)
 
 router.get('/search', searchProducts)
 

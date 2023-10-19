@@ -2,6 +2,43 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+const listProducts = async (req, res) => {
+  const { query } = req
+  const limit = query.limit ? +query.limit : 20
+  const page = query.page ? +query.page : 1
+
+  // Get total items
+  const total = await prisma.product.count()
+
+  if (total === 0)
+    return res.status(200).send({
+      status: 'success',
+      data: {
+        total,
+        products: [],
+      },
+    })
+
+  // Filter items
+  const products = await prisma.product.findMany({
+    take: limit,
+    skip: (page - 1) * limit,
+  })
+
+  if (!products)
+    return res.status(500).send({
+      status: 'error',
+      message: 'Unable to fetch products',
+    })
+  return res.status(200).send({
+    status: 'success',
+    data: {
+      total,
+      products,
+    },
+  })
+}
+
 const searchProducts = async (req, res) => {
   const { query } = req
   const limit = query.limit ? +query.limit : 20
@@ -59,4 +96,4 @@ const searchProducts = async (req, res) => {
   })
 }
 
-export default searchProducts
+export { listProducts, searchProducts }
