@@ -81,8 +81,8 @@ const searchProducts = async (req, res) => {
   const typeId = query.type || null
   const tierId = query.tier || null
   const themeId = query.theme || null
-  const gtePrice = query['gte-price'] ? +query['gte-price'] : null
-  const ltePrice = query['lte-price'] ? +query['lte-price'] : null
+  const gtePrice = query.gte_price ? +query.gte_price : null
+  const ltePrice = query.lte_price ? +query.lte_price : null
   const sort = query.sort || null
 
   // Build filter query
