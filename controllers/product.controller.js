@@ -116,12 +116,12 @@ const searchProducts = async (req, res) => {
 
   // Sort
   let orderBy = {
-    createAt: SORT.DESC,
+    createdAt: SORT.DESC,
   }
   switch (sort) {
     case SORT.CREATE_ASC:
       orderBy = {
-        createAt: SORT.ASC,
+        createdAt: SORT.ASC,
       }
       break
     case SORT.NAME_ASC:
