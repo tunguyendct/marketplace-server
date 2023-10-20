@@ -24,6 +24,9 @@ const listProducts = async (req, res) => {
   let products = await prisma.product.findMany({
     take: limit,
     skip: (page - 1) * limit,
+    orderBy: {
+      createdAt: 'desc'
+    },
     include: {
       theme: {
         select: {
