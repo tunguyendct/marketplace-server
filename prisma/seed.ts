@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Product } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -8,19 +8,19 @@ async function seedAuthor() {
     data: [
       {
         name: 'Ghozali',
-        avatar: '',
+        avatar: 'https://i.ibb.co/ryNhGpq/author-avatar.png',
         verified: true,
       },
       {
         name: 'Author_2',
-        avatar: '',
-        verified: true
+        avatar: 'https://i.ibb.co/ryNhGpq/author-avatar.png',
+        verified: true,
       },
       {
         name: 'Author_3',
-        avatar: '',
-        verified: false
-      }
+        avatar: 'https://i.ibb.co/ryNhGpq/author-avatar.png',
+        verified: false,
+      },
     ],
   })
 }
@@ -101,56 +101,58 @@ async function seedTier() {
   })
 }
 
-async function seedProduct () {
-  // await prisma.product.deleteMany()
+const products = [
+  {
+    name: 'The DJ',
+    price: 2.75,
+    image: 'https://i.ibb.co/thZmZFF/product-1.png',
+    authorId: '653136d5ff61964c725da71f',
+    typeId: '653134cc0b523078c6c0d6ec',
+    tierId: '653134cc0b523078c6c0d6e7',
+    themeId: '653134cc0b523078c6c0d6e3',
+  },
+  {
+    name: 'Assassin',
+    price: 1.5,
+    image: 'https://i.ibb.co/3fFBN2c/product-2.png',
+    authorId: '653136d5ff61964c725da720',
+    typeId: '653134cc0b523078c6c0d6ed',
+    tierId: '653134cc0b523078c6c0d6e8',
+    themeId: '653134cc0b523078c6c0d6e4',
+  },
+  {
+    name: 'Neon Guy',
+    price: 2,
+    image: 'https://i.ibb.co/N6wFnS3/product-3.png',
+    authorId: '653136d5ff61964c725da721',
+    typeId: '653134cc0b523078c6c0d6ee',
+    tierId: '653134cc0b523078c6c0d6e9',
+    themeId: '653134cc0b523078c6c0d6e5',
+  },
+  {
+    name: 'Mafia England',
+    price: 3,
+    image: 'https://i.ibb.co/pZgxF6K/product-4.png',
+    authorId: '653136d5ff61964c725da71f',
+    typeId: '653134cc0b523078c6c0d6f0',
+    tierId: '653134cc0b523078c6c0d6eb',
+    themeId: '653134cc0b523078c6c0d6e6',
+  },
+  {
+    name: 'Basketball Girl',
+    price: 2.5,
+    image: 'https://i.ibb.co/RhTRFJC/product-5.png',
+    authorId: '653136d5ff61964c725da720',
+    typeId: '653134cc0b523078c6c0d6ef',
+    tierId: '653134cc0b523078c6c0d6ea',
+    themeId: '653134cc0b523078c6c0d6e3',
+  },
+]
+
+async function seedProduct() {
+  await prisma.product.deleteMany()
   await prisma.product.createMany({
-    data: [
-      {
-        "name": "The DJ",
-        "price": 2.75,
-        "authorId": "653136d5ff61964c725da71f",
-        "typeId": "653134cc0b523078c6c0d6ec",
-        "tierId": "653134cc0b523078c6c0d6e7",
-        "themeId": "653134cc0b523078c6c0d6e3",
-        "createdAt": "2023-10-19T14:20:08.602Z"
-    },
-    {
-        "name": "Assassin",
-        "price": 1.5,
-        "authorId": "653136d5ff61964c725da720",
-        "typeId": "653134cc0b523078c6c0d6ed",
-        "tierId": "653134cc0b523078c6c0d6e8",
-        "themeId": "653134cc0b523078c6c0d6e4",
-        "createdAt": "2023-10-19T14:23:35.315Z"
-    },
-    {
-        "name": "Neon Guy",
-        "price": 2,
-        "authorId": "653136d5ff61964c725da721",
-        "typeId": "653134cc0b523078c6c0d6ee",
-        "tierId": "653134cc0b523078c6c0d6e9",
-        "themeId": "653134cc0b523078c6c0d6e5",
-        "createdAt": "2023-10-19T14:25:03.617Z"
-    },
-    {
-        "name": "Mafia England",
-        "price": 3,
-        "authorId": "653136d5ff61964c725da71f",
-        "typeId": "653134cc0b523078c6c0d6f0",
-        "tierId": "653134cc0b523078c6c0d6eb",
-        "themeId": "653134cc0b523078c6c0d6e6",
-        "createdAt": "2023-10-19T14:26:15.574Z"
-    },
-    {
-        "name": "Basketball Girl",
-        "price": 2.5,
-        "authorId": "653136d5ff61964c725da720",
-        "typeId": "653134cc0b523078c6c0d6ef",
-        "tierId": "653134cc0b523078c6c0d6ea",
-        "themeId": "653134cc0b523078c6c0d6e3",
-        "createdAt": "2023-10-19T14:27:09.788Z"
-    }
-    ]
+    data: products,
   })
 }
 
@@ -159,7 +161,7 @@ async function main() {
   // seedTheme()
   // seedType()
   // seedTier()
-  seedProduct()
+  // seedProduct()
 }
 
 main()
