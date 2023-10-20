@@ -23,6 +23,10 @@ const listThemes = async (req, res) => {
   const themes = await prisma.theme.findMany({
     take: limit,
     skip: (page - 1) * limit,
+    select: {
+      id: true,
+      name: true
+    }
   })
 
   if (!themes)

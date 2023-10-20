@@ -23,6 +23,10 @@ const listTypes = async (req, res) => {
   const types = await prisma.type.findMany({
     take: limit,
     skip: (page - 1) * limit,
+    select: {
+      id: true,
+      name: true,
+    },
   })
 
   if (!types)

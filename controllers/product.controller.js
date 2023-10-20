@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import SORT from '../constants/filter.js'
 
 const prisma = new PrismaClient()
 
@@ -20,9 +21,37 @@ const listProducts = async (req, res) => {
     })
 
   // Filter items
-  const products = await prisma.product.findMany({
+  let products = await prisma.product.findMany({
     take: limit,
     skip: (page - 1) * limit,
+    include: {
+      theme: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      type: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      author: {
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+          verified: true,
+        },
+      },
+      tier: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   })
 
   if (!products)
@@ -30,6 +59,11 @@ const listProducts = async (req, res) => {
       status: 'error',
       message: 'Unable to fetch products',
     })
+
+  products = products.map(
+    ({ themeId, authorId, typeId, tierId, ...keepAttrs }) => keepAttrs
+  )
+
   return res.status(200).send({
     status: 'success',
     data: {
@@ -44,22 +78,76 @@ const searchProducts = async (req, res) => {
   const limit = query.limit ? +query.limit : 20
   const q = query.q || null
   const page = query.page ? +query.page : 1
+  const typeId = query.type || null
+  const tierId = query.tier || null
+  const themeId = query.theme || null
+  const gtePrice = query['gte-price'] ? +query['gte-price'] : null
+  const ltePrice = query['lte-price'] ? +query['lte-price'] : null
+  const sort = query.sort || null
 
-  const filterQuery = !!q
-    ? {
-        OR: [
-          { name: { contains: q, mode: 'insensitive' } },
-          { email: { contains: q, mode: 'insensitive' } },
-          { body: { contains: q, mode: 'insensitive' } },
-        ],
+  // Build filter query
+  let filterQuery = {}
+  if (!!q) {
+    filterQuery.OR = [
+      { name: { contains: q, mode: 'insensitive' } },
+      { email: { contains: q, mode: 'insensitive' } },
+      { body: { contains: q, mode: 'insensitive' } },
+    ]
+  }
+
+  const filterKeys = { themeId, typeId, tierId }
+
+  Object.keys(filterKeys).map((filter) => {
+    if (!!filterKeys[filter]) {
+      filterQuery[filter] = filterKeys[filter]
+    }
+  })
+
+  if (!!gtePrice || !!ltePrice) {
+    filterQuery.price = {}
+  }
+
+  if (!!gtePrice) {
+    filterQuery.price.gte = gtePrice
+  }
+  if (!!ltePrice) {
+    filterQuery.price.lte = ltePrice
+  }
+
+  // Sort
+  let orderBy = {
+    createAt: SORT.DESC,
+  }
+  switch (sort) {
+    case SORT.CREATE_ASC:
+      orderBy = {
+        createAt: SORT.ASC,
       }
-    : {}
+      break
+    case SORT.NAME_ASC:
+      orderBy = {
+        name: SORT.ASC,
+      }
+      break
+    case SORT.NAME_DESC:
+      orderBy = {
+        name: SORT.DESC,
+      }
+      break
+    case SORT.PRICE_ACS:
+      orderBy = {
+        price: SORT.ASC,
+      }
+      break
+    case SORT.PRICE_DESC:
+      orderBy = {
+        price: SORT.DESC,
+      }
+      break
+  }
 
   // Get total items
   const total = await prisma.product.count({
-    orderBy: {
-      id: 'asc',
-    },
     where: filterQuery,
   })
 
@@ -73,11 +161,37 @@ const searchProducts = async (req, res) => {
     })
 
   // Filter items
-  const products = await prisma.product.findMany({
+  let products = await prisma.product.findMany({
     take: limit,
     skip: (page - 1) * limit,
-    orderBy: {
-      id: 'asc',
+    orderBy,
+    include: {
+      theme: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      type: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      author: {
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+          verified: true,
+        },
+      },
+      tier: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
     where: filterQuery,
   })
@@ -87,6 +201,11 @@ const searchProducts = async (req, res) => {
       status: 'error',
       message: 'Unable to fetch products list',
     })
+
+  products = products.map(
+    ({ themeId, authorId, typeId, tierId, ...keepAttrs }) => keepAttrs
+  )
+
   return res.status(200).send({
     status: 'success',
     data: {

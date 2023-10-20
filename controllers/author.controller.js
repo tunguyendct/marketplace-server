@@ -23,6 +23,12 @@ const listAuthors = async (req, res) => {
   const authors = await prisma.author.findMany({
     take: limit,
     skip: (page - 1) * limit,
+    select: {
+      id: true,
+      name: true,
+      avatar: true,
+      verified: true,
+    },
   })
 
   if (!authors)

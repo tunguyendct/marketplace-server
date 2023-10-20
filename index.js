@@ -38,7 +38,7 @@ router.get('/authors', listAuthors)
 
 router.get('/products', listProducts)
 
-router.get('/search', searchProducts)
+router.get('/search/products', searchProducts)
 
 app.get('/', function (_req, res) {
   res.send('Hello')

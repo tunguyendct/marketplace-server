@@ -23,6 +23,10 @@ const listTiers = async (req, res) => {
   const tiers = await prisma.tier.findMany({
     take: limit,
     skip: (page - 1) * limit,
+    select: {
+      id: true,
+      name: true
+    }
   })
 
   if (!tiers)
