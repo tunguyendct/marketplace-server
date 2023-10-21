@@ -25,7 +25,7 @@ const listProducts = async (req, res) => {
     take: limit,
     skip: (page - 1) * limit,
     orderBy: {
-      createdAt: 'desc'
+      createdAt: 'desc',
     },
     include: {
       theme: {
@@ -91,11 +91,7 @@ const searchProducts = async (req, res) => {
   // Build filter query
   let filterQuery = {}
   if (!!q) {
-    filterQuery.OR = [
-      { name: { contains: q, mode: 'insensitive' } },
-      { email: { contains: q, mode: 'insensitive' } },
-      { body: { contains: q, mode: 'insensitive' } },
-    ]
+    filterQuery.name = { contains: q, mode: 'insensitive' }
   }
 
   const filterKeys = { themeId, typeId, tierId }
