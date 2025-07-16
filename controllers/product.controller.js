@@ -1,7 +1,12 @@
-import { PrismaClient } from '@prisma/client'
+import { 
+  products, 
+  getProductsWithRelations, 
+  paginate, 
+  searchProducts as searchProductsHelper, 
+  filterProducts, 
+  sortProducts 
+} from '../data/index.js'
 import SORT from '../constants/filter.js'
-
-const prisma = new PrismaClient()
 
 const listProducts = async (req, res) => {
   const { query } = req
@@ -9,7 +14,7 @@ const listProducts = async (req, res) => {
   const page = query.page ? +query.page : 1
 
   // Get total items
-  const total = await prisma.product.count()
+  const total = products.length
 
   if (total === 0)
     return res.status(200).send({
@@ -20,50 +25,23 @@ const listProducts = async (req, res) => {
       },
     })
 
-  // Filter items
-  let products = await prisma.product.findMany({
-    take: limit,
-    skip: (page - 1) * limit,
-    orderBy: {
-      createdAt: 'desc',
-    },
-    include: {
-      theme: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      type: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      author: {
-        select: {
-          id: true,
-          name: true,
-          avatar: true,
-          verified: true,
-        },
-      },
-      tier: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
-  })
+  // Get products with relations
+  let productsWithRelations = getProductsWithRelations()
 
-  if (!products)
+  // Sort products by creation date (newest first)
+  productsWithRelations = sortProducts(productsWithRelations, 'createdAt', 'desc')
+
+  // Paginate products
+  const paginatedProducts = paginate(productsWithRelations, page, limit)
+
+  if (!paginatedProducts)
     return res.status(500).send({
       status: 'error',
       message: 'Unable to fetch products',
     })
 
-  products = products.map(
+  // Format products to match expected structure (remove ID fields)
+  const formattedProducts = paginatedProducts.map(
     ({ themeId, authorId, typeId, tierId, ...keepAttrs }) => keepAttrs
   )
 
@@ -71,7 +49,7 @@ const listProducts = async (req, res) => {
     status: 'success',
     data: {
       total,
-      products,
+      products: formattedProducts,
     },
   })
 }
@@ -88,67 +66,59 @@ const searchProducts = async (req, res) => {
   const ltePrice = query.lte_price ? +query.lte_price : null
   const sort = query.sort || null
 
-  // Build filter query
-  let filterQuery = {}
-  if (!!q) {
-    filterQuery.name = { contains: q, mode: 'insensitive' }
+  // Start with all products
+  let filteredProducts = [...products]
+
+  // Apply search filter
+  if (q) {
+    filteredProducts = searchProductsHelper(q, ['name'], filteredProducts)
   }
 
-  const filterKeys = { themeId, typeId, tierId }
+  // Apply filters
+  const filters = {}
+  if (typeId) filters.typeId = typeId
+  if (tierId) filters.tierId = tierId
+  if (themeId) filters.themeId = themeId
+  if (gtePrice) filters.minPrice = gtePrice
+  if (ltePrice) filters.maxPrice = ltePrice
 
-  Object.keys(filterKeys).map((filter) => {
-    if (!!filterKeys[filter]) {
-      filterQuery[filter] = filterKeys[filter]
-    }
-  })
-
-  if (!!gtePrice || !!ltePrice) {
-    filterQuery.price = {}
+  if (Object.keys(filters).length > 0) {
+    filteredProducts = filterProducts(filters).filter(p => 
+      filteredProducts.some(fp => fp.id === p.id)
+    )
   }
 
-  if (!!gtePrice) {
-    filterQuery.price.gte = gtePrice
-  }
-  if (!!ltePrice) {
-    filterQuery.price.lte = ltePrice
-  }
-
-  // Sort
-  let orderBy = {
-    createdAt: SORT.DESC,
-  }
+  // Apply sorting
+  let sortBy = 'createdAt'
+  let sortOrder = 'desc'
+  
   switch (sort) {
     case SORT.CREATE_ASC:
-      orderBy = {
-        createdAt: SORT.ASC,
-      }
+      sortBy = 'createdAt'
+      sortOrder = 'asc'
       break
     case SORT.NAME_ASC:
-      orderBy = {
-        name: SORT.ASC,
-      }
+      sortBy = 'name'
+      sortOrder = 'asc'
       break
     case SORT.NAME_DESC:
-      orderBy = {
-        name: SORT.DESC,
-      }
+      sortBy = 'name'
+      sortOrder = 'desc'
       break
     case SORT.PRICE_ACS:
-      orderBy = {
-        price: SORT.ASC,
-      }
+      sortBy = 'price'
+      sortOrder = 'asc'
       break
     case SORT.PRICE_DESC:
-      orderBy = {
-        price: SORT.DESC,
-      }
+      sortBy = 'price'
+      sortOrder = 'desc'
       break
   }
 
-  // Get total items
-  const total = await prisma.product.count({
-    where: filterQuery,
-  })
+  filteredProducts = sortProducts(filteredProducts, sortBy, sortOrder)
+
+  // Get total items after filtering
+  const total = filteredProducts.length
 
   if (total === 0)
     return res.status(200).send({
@@ -159,49 +129,20 @@ const searchProducts = async (req, res) => {
       },
     })
 
-  // Filter items
-  let products = await prisma.product.findMany({
-    take: limit,
-    skip: (page - 1) * limit,
-    orderBy,
-    include: {
-      theme: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      type: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      author: {
-        select: {
-          id: true,
-          name: true,
-          avatar: true,
-          verified: true,
-        },
-      },
-      tier: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
-    where: filterQuery,
-  })
+  // Get products with relations
+  let productsWithRelations = getProductsWithRelations(filteredProducts)
 
-  if (!products)
+  // Paginate products
+  const paginatedProducts = paginate(productsWithRelations, page, limit)
+
+  if (!paginatedProducts)
     return res.status(500).send({
       status: 'error',
       message: 'Unable to fetch products list',
     })
 
-  products = products.map(
+  // Format products to match expected structure (remove ID fields)
+  const formattedProducts = paginatedProducts.map(
     ({ themeId, authorId, typeId, tierId, ...keepAttrs }) => keepAttrs
   )
 
@@ -209,7 +150,7 @@ const searchProducts = async (req, res) => {
     status: 'success',
     data: {
       total,
-      products,
+      products: formattedProducts,
     },
   })
 }

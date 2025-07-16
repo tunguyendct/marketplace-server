@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { themes, paginate } from '../data/index.js'
 
 const listThemes = async (req, res) => {
   const { query } = req
@@ -8,7 +6,7 @@ const listThemes = async (req, res) => {
   const page = query.page ? +query.page : 1
 
   // Get total items
-  const total = await prisma.theme.count()
+  const total = themes.length
 
   if (total === 0)
     return res.status(200).send({
@@ -19,17 +17,16 @@ const listThemes = async (req, res) => {
       },
     })
 
-  // Filter items
-  const themes = await prisma.theme.findMany({
-    take: limit,
-    skip: (page - 1) * limit,
-    select: {
-      id: true,
-      name: true
-    }
-  })
+  // Filter items - get paginated themes
+  const paginatedThemes = paginate(themes, page, limit)
 
-  if (!themes)
+  // Format response to match expected structure
+  const formattedThemes = paginatedThemes.map(theme => ({
+    id: theme.id,
+    name: theme.name
+  }))
+
+  if (!formattedThemes)
     return res.status(500).send({
       status: 'error',
       message: 'Unable to fetch themes',
@@ -38,7 +35,7 @@ const listThemes = async (req, res) => {
     status: 'success',
     data: {
       total,
-      themes,
+      themes: formattedThemes,
     },
   })
 }

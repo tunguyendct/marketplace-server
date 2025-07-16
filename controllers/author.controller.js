@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { authors, paginate } from '../data/index.js'
 
 const listAuthors = async (req, res) => {
   const { query } = req
@@ -8,7 +6,7 @@ const listAuthors = async (req, res) => {
   const page = query.page ? +query.page : 1
 
   // Get total items
-  const total = await prisma.author.count()
+  const total = authors.length
 
   if (total === 0)
     return res.status(200).send({
@@ -19,19 +17,18 @@ const listAuthors = async (req, res) => {
       },
     })
 
-  // Filter items
-  const authors = await prisma.author.findMany({
-    take: limit,
-    skip: (page - 1) * limit,
-    select: {
-      id: true,
-      name: true,
-      avatar: true,
-      verified: true,
-    },
-  })
+  // Filter items - get paginated authors
+  const paginatedAuthors = paginate(authors, page, limit)
 
-  if (!authors)
+  // Format response to match expected structure
+  const formattedAuthors = paginatedAuthors.map(author => ({
+    id: author.id,
+    name: author.name,
+    avatar: author.avatar,
+    verified: author.verified,
+  }))
+
+  if (!formattedAuthors)
     return res.status(500).send({
       status: 'error',
       message: 'Unable to fetch authors',
@@ -40,7 +37,7 @@ const listAuthors = async (req, res) => {
     status: 'success',
     data: {
       total,
-      authors,
+      authors: formattedAuthors,
     },
   })
 }

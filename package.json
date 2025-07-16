@@ -7,7 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "prisma generate && node index.js",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "seed": "tsx prisma/seed.ts",
+    "db:reset": "prisma db push --force-reset",
+    "db:seed": "npm run db:reset && npm run seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

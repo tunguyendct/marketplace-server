@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { tiers, paginate } from '../data/index.js'
 
 const listTiers = async (req, res) => {
   const { query } = req
@@ -8,7 +6,7 @@ const listTiers = async (req, res) => {
   const page = query.page ? +query.page : 1
 
   // Get total items
-  const total = await prisma.tier.count()
+  const total = tiers.length
 
   if (total === 0)
     return res.status(200).send({
@@ -19,17 +17,16 @@ const listTiers = async (req, res) => {
       },
     })
 
-  // Filter items
-  const tiers = await prisma.tier.findMany({
-    take: limit,
-    skip: (page - 1) * limit,
-    select: {
-      id: true,
-      name: true
-    }
-  })
+  // Filter items - get paginated tiers
+  const paginatedTiers = paginate(tiers, page, limit)
 
-  if (!tiers)
+  // Format response to match expected structure
+  const formattedTiers = paginatedTiers.map(tier => ({
+    id: tier.id,
+    name: tier.name
+  }))
+
+  if (!formattedTiers)
     return res.status(500).send({
       status: 'error',
       message: 'Unable to fetch tiers',
@@ -38,7 +35,7 @@ const listTiers = async (req, res) => {
     status: 'success',
     data: {
       total,
-      tiers,
+      tiers: formattedTiers,
     },
   })
 }

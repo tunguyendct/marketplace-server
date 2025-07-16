@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { types, paginate } from '../data/index.js'
 
 const listTypes = async (req, res) => {
   const { query } = req
@@ -8,7 +6,7 @@ const listTypes = async (req, res) => {
   const page = query.page ? +query.page : 1
 
   // Get total items
-  const total = await prisma.type.count()
+  const total = types.length
 
   if (total === 0)
     return res.status(200).send({
@@ -19,17 +17,16 @@ const listTypes = async (req, res) => {
       },
     })
 
-  // Filter items
-  const types = await prisma.type.findMany({
-    take: limit,
-    skip: (page - 1) * limit,
-    select: {
-      id: true,
-      name: true,
-    },
-  })
+  // Filter items - get paginated types
+  const paginatedTypes = paginate(types, page, limit)
 
-  if (!types)
+  // Format response to match expected structure
+  const formattedTypes = paginatedTypes.map(type => ({
+    id: type.id,
+    name: type.name,
+  }))
+
+  if (!formattedTypes)
     return res.status(500).send({
       status: 'error',
       message: 'Unable to fetch types',
@@ -38,7 +35,7 @@ const listTypes = async (req, res) => {
     status: 'success',
     data: {
       total,
-      types,
+      types: formattedTypes,
     },
   })
 }
