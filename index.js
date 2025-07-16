@@ -17,7 +17,9 @@ global.__basedir = path.resolve() + '/..'
 const app = express()
 
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: process.env.CLIENT_URL || true, // Allow all origins in development if CLIENT_URL is not set
+  credentials: true,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
 // Middleware
