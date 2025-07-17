@@ -2,7 +2,7 @@ export const products = [
   {
     id: 'product_1',
     name: 'The DJ',
-    image: 'https://i.ibb.co/thZmZFF/product-1.png',
+    image: `${process.env.SERVER_URL}/assets/product-1.png`,
     price: 2.75,
     authorId: 'author_1',
     typeId: 'type_1',
@@ -13,7 +13,7 @@ export const products = [
   {
     id: 'product_2',
     name: 'Assassin',
-    image: 'https://i.ibb.co/3fFBN2c/product-2.png',
+    image: `${process.env.SERVER_URL}/assets/product-2.png`,
     price: 1.5,
     authorId: 'author_2',
     typeId: 'type_6',
@@ -24,7 +24,7 @@ export const products = [
   {
     id: 'product_3',
     name: 'Neon Guy',
-    image: 'https://i.ibb.co/N6wFnS3/product-3.png',
+    image: `${process.env.SERVER_URL}/assets/product-3.png`,
     price: 2.0,
     authorId: 'author_3',
     typeId: 'type_1',
@@ -35,7 +35,7 @@ export const products = [
   {
     id: 'product_4',
     name: 'Mafia England',
-    image: 'https://i.ibb.co/pZgxF6K/product-4.png',
+    image: `${process.env.SERVER_URL}/assets/product-4.png`,
     price: 3.0,
     authorId: 'author_1',
     typeId: 'type_6',
@@ -46,7 +46,7 @@ export const products = [
   {
     id: 'product_5',
     name: 'Basketball Girl',
-    image: 'https://i.ibb.co/RhTRFJC/product-5.png',
+    image: `${process.env.SERVER_URL}/assets/product-5.png`,
     price: 2.5,
     authorId: 'author_4',
     typeId: 'type_1',
@@ -57,7 +57,7 @@ export const products = [
   {
     id: 'product_6',
     name: 'Cyber Ninja',
-    image: 'https://i.ibb.co/2MQJ8Ln/cyber-ninja.png',
+    image: `${process.env.SERVER_URL}/assets/product-3.png`,
     price: 4.2,
     authorId: 'author_5',
     typeId: 'type_6',
@@ -68,7 +68,7 @@ export const products = [
   {
     id: 'product_7',
     name: 'Medieval Knight',
-    image: 'https://i.ibb.co/3WvQk2J/medieval-knight.png',
+    image: `${process.env.SERVER_URL}/assets/product-2.png`,
     price: 5.0,
     authorId: 'author_6',
     typeId: 'type_6',
@@ -79,7 +79,7 @@ export const products = [
   {
     id: 'product_8',
     name: 'Space Explorer',
-    image: 'https://i.ibb.co/7XYwQpL/space-explorer.png',
+    image: `${process.env.SERVER_URL}/assets/product-4.png`,
     price: 3.8,
     authorId: 'author_7',
     typeId: 'type_6',
@@ -90,7 +90,7 @@ export const products = [
   {
     id: 'product_9',
     name: 'Steampunk Engineer',
-    image: 'https://i.ibb.co/QjLmN8K/steampunk-engineer.png',
+    image: `${process.env.SERVER_URL}/assets/product-5.png`,
     price: 4.5,
     authorId: 'author_8',
     typeId: 'type_6',
@@ -101,7 +101,7 @@ export const products = [
   {
     id: 'product_10',
     name: 'Forest Ranger',
-    image: 'https://i.ibb.co/VYrJ9Ks/forest-ranger.png',
+    image: `${process.env.SERVER_URL}/assets/product-1.png`,
     price: 2.8,
     authorId: 'author_2',
     typeId: 'type_1',
@@ -112,7 +112,7 @@ export const products = [
   {
     id: 'product_11',
     name: 'Urban Hacker',
-    image: 'https://i.ibb.co/J2KLmPq/urban-hacker.png',
+    image: `${process.env.SERVER_URL}/assets/product-2.png`,
     price: 3.2,
     authorId: 'author_3',
     typeId: 'type_1',
@@ -123,7 +123,7 @@ export const products = [
   {
     id: 'product_12',
     name: 'Mystical Wizard',
-    image: 'https://i.ibb.co/2NrP8vL/mystical-wizard.png',
+    image: `${process.env.SERVER_URL}/assets/product-3.png`,
     price: 6.0,
     authorId: 'author_4',
     typeId: 'type_6',
@@ -134,7 +134,7 @@ export const products = [
   {
     id: 'product_13',
     name: 'Retro Gamer',
-    image: 'https://i.ibb.co/4RpLnVq/retro-gamer.png',
+    image: `${process.env.SERVER_URL}/assets/product-4.png`,
     price: 1.9,
     authorId: 'author_5',
     typeId: 'type_1',
@@ -145,7 +145,7 @@ export const products = [
   {
     id: 'product_14',
     name: 'Minimalist Designer',
-    image: 'https://i.ibb.co/QvMnR7J/minimalist-designer.png',
+    image: `${process.env.SERVER_URL}/assets/product-5.png`,
     price: 2.3,
     authorId: 'author_6',
     typeId: 'type_1',
@@ -156,7 +156,7 @@ export const products = [
   {
     id: 'product_15',
     name: 'Pirate Captain',
-    image: 'https://i.ibb.co/8sjKLpN/pirate-captain.png',
+    image: `${process.env.SERVER_URL}/assets/product-1.png`,
     price: 4.7,
     authorId: 'author_7',
     typeId: 'type_6',
@@ -167,7 +167,7 @@ export const products = [
   {
     id: 'product_16',
     name: 'Zombie Survivor',
-    image: 'https://i.ibb.co/M8vRnKp/zombie-survivor.png',
+    image: `${process.env.SERVER_URL}/assets/product-2.png`,
     price: 3.5,
     authorId: 'author_8',
     typeId: 'type_6',
@@ -178,7 +178,7 @@ export const products = [
   {
     id: 'product_17',
     name: 'Angel Warrior',
-    image: 'https://i.ibb.co/LZKpR9J/angel-warrior.png',
+    image: `${process.env.SERVER_URL}/assets/product-3.png`,
     price: 5.5,
     authorId: 'author_1',
     typeId: 'type_6',
@@ -189,7 +189,7 @@ export const products = [
   {
     id: 'product_18',
     name: 'Demon Hunter',
-    image: 'https://i.ibb.co/8N4pLqM/demon-hunter.png',
+    image: `${process.env.SERVER_URL}/assets/product-4.png`,
     price: 5.2,
     authorId: 'author_2',
     typeId: 'type_6',
@@ -200,7 +200,7 @@ export const products = [
   {
     id: 'product_19',
     name: 'Beach Surfer',
-    image: 'https://i.ibb.co/J3mLpNr/beach-surfer.png',
+    image: `${process.env.SERVER_URL}/assets/product-5.png`,
     price: 1.8,
     authorId: 'author_3',
     typeId: 'type_1',
@@ -211,7 +211,7 @@ export const products = [
   {
     id: 'product_20',
     name: 'Arctic Explorer',
-    image: 'https://i.ibb.co/QvRnK8J/arctic-explorer.png',
+    image: `${process.env.SERVER_URL}/assets/product-1.png`,
     price: 3.9,
     authorId: 'author_4',
     typeId: 'type_6',
@@ -222,7 +222,7 @@ export const products = [
   {
     id: 'product_21',
     name: 'Punk Rocker',
-    image: 'https://i.ibb.co/8x4RpLn/punk-rocker.png',
+    image: `${process.env.SERVER_URL}/assets/product-2.png`,
     price: 2.6,
     authorId: 'author_5',
     typeId: 'type_1',
@@ -233,7 +233,7 @@ export const products = [
   {
     id: 'product_22',
     name: 'Business Executive',
-    image: 'https://i.ibb.co/JvKLmPq/business-executive.png',
+    image: `${process.env.SERVER_URL}/assets/product-3.png`,
     price: 2.1,
     authorId: 'author_6',
     typeId: 'type_6',
@@ -244,7 +244,7 @@ export const products = [
   {
     id: 'product_23',
     name: 'Superhero Vigilante',
-    image: 'https://i.ibb.co/2MJvKLn/superhero-vigilante.png',
+    image: `${process.env.SERVER_URL}/assets/product-4.png`,
     price: 4.8,
     authorId: 'author_7',
     typeId: 'type_6',
@@ -255,7 +255,7 @@ export const products = [
   {
     id: 'product_24',
     name: 'Alien Diplomat',
-    image: 'https://i.ibb.co/J3vKLmP/alien-diplomat.png',
+    image: `${process.env.SERVER_URL}/assets/product-5.png`,
     price: 6.5,
     authorId: 'author_8',
     typeId: 'type_6',
@@ -266,7 +266,7 @@ export const products = [
   {
     id: 'product_25',
     name: 'Victorian Gentleman',
-    image: 'https://i.ibb.co/QvMnR8J/victorian-gentleman.png',
+    image: `${process.env.SERVER_URL}/assets/product-1.png`,
     price: 3.7,
     authorId: 'author_1',
     typeId: 'type_6',

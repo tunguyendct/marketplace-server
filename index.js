@@ -27,6 +27,9 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 
+// Serve static files from assets folder
+app.use('/assets', express.static(path.join(process.cwd(), 'assets')))
+
 // API routes
 app.use('/api', router)
 
